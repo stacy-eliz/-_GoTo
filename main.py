@@ -20,112 +20,6 @@ def sortByAlphabet(inputStr):
     return inputStr[0]
 
 
-def settler(base):
-    print("УПОРОШКИИИИИИИ")
-    boys = []
-    girls = []
-    s = os.listdir(base)
-    s.sort(key=sortByAlphabet)
-    sex = ''
-    for d in s:
-        e = open(base + d, 'r')
-        for i, line in enumerate(e):
-            if i == 0:
-                age = int(line[:len(line) - 1])
-            elif i == 1:
-                sex = str(line)[0]
-            else:
-                break
-        if sex.lower() == "м":
-            boys.append([int(age), ' '.join(d.split('_'))])
-        elif sex.lower() == "ж":
-            girls.append([int(age), ' '.join(d.split('_'))])
-    boys.sort(key=sortByAlphabet)
-    girls.sort(key=sortByAlphabet)
-    return boys, girls
-
-def rooms(boys, girls, b, g, type1, type2):
-    tempure = []
-    spred = {}
-    cnt = 0
-    k = 3
-    j = 0
-
-    if (type1 * 4) + (type2 * 3) < b + g:
-        return -1
-
-    for i in range(b):
-        print(tempure)
-        if cnt < k:
-            tempure.append(boys[i][1])
-            cnt += 1
-            continue
-        else:
-            cnt = 0
-            type1 = type1 - 1
-            j += 1
-            paper = list(tempure)
-            spred[j] = paper
-            print(paper)
-            tempure.clear()
-            if type1 == 0:
-                k = 4
-                type1 = type2
-        tempure.append(boys[i][1])
-        cnt += 1
-
-    if tempure:
-        cnt = 0
-        type1 = type1 - 1
-        j = j + 1
-        paper = list(tempure)
-        spred[j] = paper
-        tempure.clear()
-        if type1 == 0:
-            k = 4
-            type1 = type2
-
-    if len(spred.get(j)) == 1:
-        a = spred.get(j - 1)[1]
-        spred.get(j).append(a)
-        del spred.get(j - 1)[1]
-
-    for i in range(g):
-        if cnt < k:
-            tempure.append(girls[i][1])
-            cnt += 1
-            continue
-        else:
-            cnt = 0
-            type1 = type1 - 1
-            j = j + 1
-            paper = list(tempure)
-            spred[j] = paper
-            tempure.clear()
-            if type1 == 0:
-                k = 4
-                type1 = type2
-        tempure.append(girls[i][1])
-        cnt += 1
-    if tempure:
-        cnt = 0
-        type1 = type1 - 1
-        j = j + 1
-        paper = list(tempure)
-        spred[j] = paper
-        tempure.clear()
-        if (type1 == 0):
-            k = 4
-            type1 = type2
-
-    if len(spred.get(j)) == 1:
-        a = spred.get(j - 1)[1]
-        spred.get(j).append(a)
-        del spred.get(j - 1)[1]
-
-    return spred
-
-
 def start(bot, update):
     bot.sendMessage(chat_id=update.message.chat_id, text="""Здравствуй, кто бы ты ни был! :)
 Я помогу тебе распределить людей по группам!
@@ -156,10 +50,6 @@ def link(bot, update):
         activephile.write(sheet.cell_value(m, 4) + '\n')  # направление
         activephile.write(sheet.cell_value(m, 5) + '\n')  # комментарий
 
-    reply_keyboard = [['Комнаты', 'Мероприятие', 'Свечки']]
-    markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
-    update.message.reply_text("А теперь выбери тип сортировки", reply_markup=markup)
-
 
 def filter(bot, update):
     message = update.message.text
@@ -167,18 +57,7 @@ def filter(bot, update):
         n = int(message)
     except:
         pass
-    if message == 'Свечки':
-        update.message.reply_text("Отлично! Какое количество команд?")
-    elif message == 'Мероприятие':
-        update.message.reply_text("Хорошо. Сколько будет команд?")
-    elif message == 'Комнаты':
-        print(1)
-        boys, girls = settler(workspace)
-        print(boys)
-        print(girls)
-        # update.message.reply_text("Сколько парней, девушек на смене? Сколько трёхместный и четырёхместных домов? Ввести в формате <n1 n2 n3 n4>")
-        print(rooms(boys, girls, 41, 4, 6, 8))
-    elif message.lower() == 'да':
+    if message.lower() == 'да':
         r = glob.glob(workspace + "*")
         for i in r:
             os.remove(i)
