@@ -43,7 +43,7 @@ def link(bot, update):
 
     wb = xlrd.open_workbook("doc.xlsx")
     sheet = wb.sheet_by_index(0)
-    for m in range(0, sheet.nrows - 1):
+    for m in range(0, sheet.nrows):
         name = ('_'.join(sheet.cell_value(m, 0).split()) + ".txt").lower()
         activephile = open(workspace + name, 'w')
         activephile.write(sheet.cell_value(m, 1) + '\n')  # возраст
@@ -83,7 +83,15 @@ def list(bot, update):
             k = j.split('_')
             new.append(' '.join(k[:-1]) + ' ' + k[-1][:-4])
         new.sort(key=sortByAlphabet)
-        update.message.reply_text('\n'.join(new))
+        output = []
+        for j in new:
+            l = ''
+            for k in j.split():
+                l += k[0].upper() + k[1:] + ' '
+            l += '\n'
+            output.append(l)
+        update.message.reply_text(''.join(output))
+
     else:
         update.message.reply_text("Пока что нет участников")
 
@@ -124,10 +132,6 @@ def view(bot, update, args):
 def clear(bot, update):
     update.message.reply_text('Погоди, уверен? Да/Нет')
 
-
-def stop(bot, update):
-    update.message.reply_text("Удачи!")
-    return ConversationHandler.END
 
 
 updater = Updater(token='820418482:AAFuEdJLEx82e6N8x-IKytz_r2JbqvtrX2U', request_kwargs=REQUEST_KWARGS)
